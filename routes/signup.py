@@ -1,3 +1,4 @@
+import gladiator as gl 
 
 def register(request,bcrypt ,User ,db , jsonify):
     if request.method == 'POST':
@@ -5,6 +6,21 @@ def register(request,bcrypt ,User ,db , jsonify):
         username = request.json["username"]
         email = request.json["email"]
         password = request.json["password"]
+
+        data = {
+            'email':email,
+            'username': username,
+            'password':password
+        }
+
+        field_validations = ( 
+                ('email', gl.required, gl.format_email), 
+                ('password', gl.required, gl.length_min(5)), 
+                ('username', gl.required, gl.type_(str))
+            )
+
+        if not gl.validate(field_validations, data) :
+            return jsonify({"error": "validation error",})
 
         hashedPassword = bcrypt.generate_password_hash(password)
 
