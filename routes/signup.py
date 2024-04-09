@@ -1,11 +1,17 @@
 import gladiator as gl 
+from flask import render_template, redirect, url_for , flash
 
 def register(request,bcrypt ,User ,db , jsonify):
+
+    if request.method == 'GET':
+
+        return render_template('register.html',)
+
     if request.method == 'POST':
 
-        username = request.json["username"]
-        email = request.json["email"]
-        password = request.json["password"]
+        username = request.form.get("username")
+        email = request.form.get("email")
+        password = request.form.get("password")
 
         data = {
             'email':email,
@@ -20,7 +26,8 @@ def register(request,bcrypt ,User ,db , jsonify):
             )
 
         if not gl.validate(field_validations, data) :
-            return jsonify({"error": "validation error",})
+            flash('validation error', 'info')
+            return redirect(url_for('signup'))
 
         hashedPassword = bcrypt.generate_password_hash(password)
 
@@ -28,21 +35,27 @@ def register(request,bcrypt ,User ,db , jsonify):
         username_exists = User.query.filter_by(username=username).first() is not None
 
         if user_exists:
-            return jsonify({"error": "email already exists"}), 409
+            flash('account with this email already exists')
+            return redirect(url_for('signup'))
         
         if username_exists:
-            return jsonify({"error": "username already exists"}), 409
+            flash('account with this username already exists')
+            return redirect(url_for('signup'))
         
         new_user = User(email=email , password=hashedPassword , username=username )
 
         db.session.add(new_user)
         db.session.commit()
 
-        return jsonify({
+        """return jsonify({
             "id": new_user.id,
             "email": new_user.email,
             "message":"accocunt created"
-        })
+        })"""
+
+        flash(f'account created successfully , login to your account')
+        return redirect(url_for('signin'))
 
     else:
-        return jsonify({ "error": "invalid method"}), 401
+        flash(f'something went wrong try a bit later')
+        return redirect(url_for('signup'))

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+    {% block content %}
+        <div class="container">
+                {% with messages = get_flashed_messages()%}
+                    {% if messages%}
+                        {% for message in messages%}
+                            <p id="flash_message">{{message}}</p>
+                        {%endfor%}
+                    {%endif%}
+                {%endwith%}
+            <h1>Please login</h1>
+            <br>
+            <form action="/signin" method="post">
+                <input type="email" placeholder="Email" name="email" >
+
+                <input type="password" placeholder="Password" name="password" >
+
+                <input class="btn btn-default" type="submit" value="Login">
+            </form>
+            <a href="{{ url_for('signup') }}">dont  have an acoount ? , sign up</a>
+        </div>
+    {% endblock %}

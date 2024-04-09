@@ -1,11 +1,15 @@
 import gladiator as gl 
+from flask import render_template, redirect, url_for, flash
 
-def login(request , User , jsonify , bcrypt , session ,flask):
-    
+def login(request , User , bcrypt , session ,flask):
+    if request.method == 'GET':
+
+        return render_template('login.html')
+
     if request.method == 'POST':
 
-        email = request.json['email']
-        password = request.json['password']
+        email = request.form.get('email')
+        password = request.form.get('password')
 
         data = {
             'email':email,
@@ -18,20 +22,25 @@ def login(request , User , jsonify , bcrypt , session ,flask):
             )
 
         if not gl.validate(field_validations, data) :
-            return jsonify({"error": "validation error",})
+            flash('validation error', 'info')
+            return redirect(url_for('signin'))
 
         user = User.query.filter_by(email=email).first()
 
         if user is None :
-            return jsonify({"error": "unauthorized"}), 401
+            flash('incorect information', 'info')
+            return redirect(url_for('signin'))
 
         if not bcrypt.check_password_hash(user.password, password):
-            return jsonify({"error": "unauthorized"}), 401
+            flash('incorect information', 'info')
+            return redirect(url_for('signin'))
 
         session['user_id'] = user.id
         flask.session['user_id'] = user.id
 
-        return jsonify({
+        """return jsonify({
         "id": user.id,
         "email": user.email,
-        })
+        })"""
+        flash('logged in successfully , welcome to your profile page', 'info')
+        return redirect(url_for('homepage'))
