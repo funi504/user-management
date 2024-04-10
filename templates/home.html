@@ -1,12 +1,70 @@
-<html>
-  <head>
-    <title>Home page</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="static/bootstrap.min.css" rel="stylesheet" media="screen">
-  </head>
-  <body>
-    <div class="container">
-        loged in
-    </div>
-  </body>
-</html>
+{% extends "base.html" %}
+
+
+{% block content %}
+  <div>
+    {% with messages = get_flashed_messages()%}
+    {% if messages%}
+        {% for message in messages%}
+            <p id="flash_message">{{message}}</p>
+        {%endfor%}
+    {%endif%}
+    {%endwith%}
+  </div>
+  <div>
+    <p>Username :{{username}}</p>
+    <p>Email : {{email}}</p>
+  </div>
+  <div>
+
+    <form action="/profile" method="post" >
+      <label>username:</label>
+      <input type = "text" value={{username}} placeholder="enter new username" name="username">
+
+      <label>email</label>
+      <input type="email" value="{{email}}" placeholder="enter new email" name="email">
+
+      <input type="submit" value="edit">
+    </form>
+  </div>
+
+  <div>
+    <form id="deleteForm" method="post" action="/profile" >
+      <input type="password" name="password" placeholder="enter password to delete account" id="user-password">
+      <input type="submit" value="delete">
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('deleteForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+        var password = document.getElementById('user-password').value;
+        fetch('/profile', {
+            method: 'DELETE',
+            body: JSON.stringify({ "password": password }),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include' // Include cookies in the request
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json(); // Parse the JSON response
+            } else {
+                throw new Error('Failed to delete account');
+            }
+        })
+        .then(data => {
+            // Handle response data
+            console.log(data);
+            window.location.href = '/signup'; // Redirect to sign-up page
+        })
+        .catch(error => {
+            //console.error('Error:', error);
+            // Handle error, maybe show an error message to the user
+            alert("failed to delete account")
+        });
+    });
+</script>
+
+{% endblock %}

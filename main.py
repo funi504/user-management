@@ -8,6 +8,7 @@ from flask_bcrypt import Bcrypt
 import json
 from routes.signup import register
 from routes.signin import login
+from routes.profile import user_profile
 
 
 app = Flask(__name__)
@@ -31,16 +32,30 @@ def signup():
 
 @app.route("/signin" , methods=['POST','GET'])
 def signin():
-    #TODO: reload automatically when debugging, and styling for jinja
     resp = login(request , User , bcrypt , session ,flask)
+    return resp
+
+@app.route("/profile" , methods=['POST','GET' , 'DELETE'])
+def profile_user():
+    resp = user_profile(request , session, User , db , jsonify , bcrypt)
     return resp
 
 @app.route("/home" , methods=['POST','GET'])
 def homepage():
+
+    user_id = session.get("user_id")
     
-    return render_template('home.html',)
+    if user_id is not None:
+        user = User.query.filter_by(id = user_id).first()
+        email = user.email
+        username = user.username
+
+        return render_template('home.html', email=email , username=username)
+    else:
+        flash(" please first  login")
+        return redirect(url_for('signin'))
 
 # main driver function
 if __name__ == '__main__':
  
-    app.run('localhost', 8080)
+    app.run('localhost', port=8080 , debug=True )

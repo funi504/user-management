@@ -28,11 +28,11 @@ def login(request , User , bcrypt , session ,flask):
         user = User.query.filter_by(email=email).first()
 
         if user is None :
-            flash('incorect information', 'info')
+            flash('incorect information ', 'info')
             return redirect(url_for('signin'))
 
         if not bcrypt.check_password_hash(user.password, password):
-            flash('incorect information', 'info')
+            flash('incorect information ', 'info')
             return redirect(url_for('signin'))
 
         session['user_id'] = user.id
