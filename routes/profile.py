@@ -9,7 +9,7 @@ def user_profile(request , session, User , db ,jsonify , bcrypt):
     if  user_id is None:
         flash("session expired please login")
         return redirect(url_for('signin'))
-
+    #this post method act as a put method
     if request.method == "POST":
         try:
             user = User.query.filter_by(id=user_id).first()

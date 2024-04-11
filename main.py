@@ -96,14 +96,47 @@ def createadmins():
 #TODO: admin view,  create , read , update , delete and suspend users
 @app.route('/admin' , methods=['GET','POST','PUT','DELETE'])
 def adminpage():
-    resp = admin( session , AdminUser , User , request)
+    resp = admin( session , AdminUser , User , request, jsonify , db )
     return resp
 
 #TODO: superadmin view , create , read , delete and suspend admin
 @app.route('/superadmin', methods=['GET' , 'POST' , 'PUT' , 'DELETE'])
 def superadminpage():
-    resp = superadmin( session , AdminUser , User , request , db)
+    resp = superadmin( session , AdminUser , User , request , db , jsonify)
     return resp
+
+@app.route('/suspend', methods=['POST'])
+def suspend():
+    user_id = session.get("user_id")
+
+    if user_id is None:
+        flash("session expired please login")
+        return redirect(url_for('signin'))
+    
+    admin_user = AdminUser.query.filter_by(id=user_id).first()
+
+    if admin_user is None:
+        return redirect(url_for('homepage'))
+    if request.method =='POST':
+
+        id = request.form.get('id')
+        user = User.query.filter_by(id=id).first()
+
+        if user is None:
+            flash("user does not exists")
+            return redirect(url_for('homepage'))
+
+        if not user.is_suspended:
+            user.is_suspended = True
+            db.session.commit()
+            
+            return redirect(url_for('adminpage'))
+
+        if user.is_suspended:
+            user.is_suspended = False
+            db.session.commit()
+            
+            return redirect(url_for('adminpage'))
 
 
 # main driver function

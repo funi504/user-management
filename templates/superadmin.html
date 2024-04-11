@@ -1,29 +1,62 @@
 {% extends "base.html" %}
 
-
 {% block content %}
   <div>
-    {% with messages = get_flashed_messages()%}
-    {% if messages%}
-        {% for message in messages%}
-            <p id="flash_message">{{message}}</p>
-        {%endfor%}
-    {%endif%}
-    {%endwith%}
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <p id="flash_message">{{ message }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
   </div>
   <div>
     <a href="/home">Home</a>
-    <br/>
-    <a href="/admin">admin dashboard</a>
+    <br>
+    <a href="/admin">Admin Dashboard</a>
   </div>
   <div>
     {% for admin in all_admins %}
-        <p>Username :{{admin.username}}</p>
-        <p>Email : {{admin.email}}</p>
-        <p>user id : {{admin.id}}</p>
+      <p>Username: {{ admin.username }}</p>
+      <p>Email: {{ admin.email }}</p>
+      <p>User ID: {{ admin.id }}</p>
+      <form class="removeAdminForm" method="post">
+        <input type="hidden" value="{{ admin.id }}" name="id">
+        <input type="submit" value="Remove as Admin">
+      </form>
     {% endfor %}
   </div>
-  <div>
-
-
+  <script>
+    document.querySelectorAll('.removeAdminForm').forEach(form => {
+      form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+        var admin_id = this.querySelector('input[name="id"]').value;
+        fetch('/superadmin', {
+          method: 'DELETE',
+          body: JSON.stringify({ "id": admin_id }),
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include' // Include cookies in the request
+        })
+        .then(response => {
+          if (response.ok) {
+            return response.json(); // Parse the JSON response
+          } else {
+            throw new Error('Failed to remove user as admin');
+          }
+        })
+        .then(data => {
+          // Handle response data
+          console.log(data);
+          window.location.href = '/superadmin'; // Redirect to superadmin page
+          alert("removed user as admin");
+        })
+        .catch(error => {
+          // Handle error, maybe show an error message to the user
+          alert("Failed to remove user as admin");
+        });
+      });
+    });
+  </script>
 {% endblock %}

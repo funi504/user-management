@@ -27,8 +27,13 @@ def login(request , User , bcrypt , session ,flask):
 
         user = User.query.filter_by(email=email).first()
 
+
         if user is None :
             flash('incorect information ', 'info')
+            return redirect(url_for('signin'))
+
+        if  user.is_suspended:
+            flash('your account is suspended ', 'info')
             return redirect(url_for('signin'))
 
         if not bcrypt.check_password_hash(user.password, password):

@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 
-
 {% block content %}
   <div>
     {% with messages = get_flashed_messages()%}
@@ -24,16 +23,121 @@
     {% for user in users %}
         <p>Username :{{user.username}}</p>
         <p>Email : {{user.email}}</p>
-        <p>user id : {{user.id}}</p>
+        <p>is suspended : {{user.is_suspended}}</p>
+        <p>User id : {{user.id}}</p>
+
         {% if isSuperAdmin %}
-          <form action="/superadmin" method="post" >
-            <input type="text" value={{user.id}} name="id" >
-            <input type="submit" value="make admin" >
+          <form action="/superadmin" method="post">
+            <input type="hidden" value="{{user.id}}" name="id">
+            <input type="submit" value="Make admin">
+          </form>
+        {% endif %}
+
+        <form action="/admin" method="post" class="editForm">
+          <input type="hidden" value="{{user.id}}" name="id">
+          <label>Username:</label>
+          <input type="text" value="{{user.username}}" placeholder="Enter new username" name="username">
+          <label>Email:</label>
+          <input type="email" value="{{user.email}}" placeholder="Enter new email" name="email">
+          <input type="submit" value="Edit">
+        </form>
+
+        <form action="/admin" method="post" class="deleteForm">
+          <input type="hidden" value="{{user.id}}" name="id">
+          <input type="submit" value="delete user">
+        </form>
+        {% if user.is_suspended %}
+          <form action="/suspend" method="post" >
+            <input type="hidden" value="{{user.id}}" name="id">
+            <input type="submit" value="reinstate user">
+          </form>
+        {% endif %}
+
+        {% if not user.is_suspended %}
+          <form action="/suspend" method="post" >
+            <input type="hidden" value="{{user.id}}" name="id">
+            <input type="submit" value="suspend user">
           </form>
         {% endif %}
     {% endfor %}
   </div>
   <div>
 
+    <script>
+      document.querySelectorAll('.editForm').forEach(form => {
+        form.addEventListener('submit', function(event) {
+          event.preventDefault(); // Prevent default form submission
+          var username = form.querySelector('input[name="username"]').value;
+          var email = form.querySelector('input[name="email"]').value;
+          var id = form.querySelector('input[name="id"]').value;
+          fetch('/admin', {
+            method: 'PUT',
+            body: JSON.stringify({ 
+              "id": id,
+              "email": email,
+              "username": username
+            }),
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            credentials: 'include' // Include cookies in the request
+          })
+          .then(response => {
+            if (response.ok) {
+              return response.json(); // Parse the JSON response
+            } else {
+              throw new Error('Failed to update user info');
+            }
+          })
+          .then(data => {
+            // Handle response data
+            console.log(data);
+            window.location.href = '/admin'; // Redirect to admin page
+            alert("Info updated");
+          })
+          .catch(error => {
+            // Handle error, maybe show an error message to the user
+            alert("Failed to update user info");
+          });
+        });
+      });
+    </script>
+
+    <script>
+      document.querySelectorAll('.deleteForm').forEach(form => {
+        form.addEventListener('submit', function(event) {
+          event.preventDefault(); // Prevent default form submission
+          var id = form.querySelector('input[name="id"]').value;
+          fetch('/admin', {
+            method: 'DELETE',
+            body: JSON.stringify({ 
+              "id": id,
+
+            }),
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            credentials: 'include' // Include cookies in the request
+          })
+          .then(response => {
+            if (response.ok) {
+              return response.json(); // Parse the JSON response
+            } else {
+              throw new Error('Failed to delete user ');
+            }
+          })
+          .then(data => {
+            // Handle response data
+            console.log(data);
+            window.location.href = '/admin'; // Redirect to admin page
+            alert("user deleted");
+          })
+          .catch(error => {
+            // Handle error, maybe show an error message to the user
+            alert("Failed to delete user ");
+          });
+        });
+      });
+    </script>
 
 {% endblock %}
