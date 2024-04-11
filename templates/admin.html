@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+  <div>
+    {% with messages = get_flashed_messages()%}
+    {% if messages%}
+        {% for message in messages%}
+            <p id="flash_message">{{message}}</p>
+        {%endfor%}
+    {%endif%}
+    {%endwith%}
+  </div>
+  <div>
+  </div>
+  <div>
+    <a href="/home">Home</a>
+    <br/>
+    {% if isSuperAdmin %}
+       <a href="/superadmin">super admin dashboard</a>
+    {% endif %}
+  </div>
+  <div>
+    {% for user in users %}
+        <p>Username :{{user.username}}</p>
+        <p>Email : {{user.email}}</p>
+        <p>user id : {{user.id}}</p>
+        {% if isSuperAdmin %}
+          <form action="/superadmin" method="post" >
+            <input type="text" value={{user.id}} name="id" >
+            <input type="submit" value="make admin" >
+          </form>
+        {% endif %}
+    {% endfor %}
+  </div>
+  <div>
+
+
+{% endblock %}

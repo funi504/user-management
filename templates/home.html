@@ -12,6 +12,11 @@
     {%endwith%}
   </div>
   <div>
+    {% if isAdmin %}
+      <a href="/admin">admin dashboard</a>
+    {% endif%}
+  </div>
+  <div>
     <p>Username :{{username}}</p>
     <p>Email : {{email}}</p>
   </div>
@@ -34,7 +39,12 @@
       <input type="submit" value="delete">
     </form>
   </div>
+  <form action="/signout" method="post" >
 
+    <input type="submit" value="log out">
+
+  </form>
+</div>
   <script>
     document.getElementById('deleteForm').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent default form submission

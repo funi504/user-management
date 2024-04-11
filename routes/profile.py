@@ -1,11 +1,12 @@
+import gladiator as gl 
 from flask import redirect, url_for, flash
 
 def user_profile(request , session, User , db ,jsonify , bcrypt):
 
     user_id = session.get("user_id") 
     print(f"user Id : {user_id} ")
-    if not user_id:
-        
+
+    if  user_id is None:
         flash("session expired please login")
         return redirect(url_for('signin'))
 
@@ -14,6 +15,21 @@ def user_profile(request , session, User , db ,jsonify , bcrypt):
             user = User.query.filter_by(id=user_id).first()
             email = request.form.get("email")
             username =  request.form.get("username")
+
+
+            data = {
+                'email':email,
+                'username': username,
+            }
+
+            field_validations = ( 
+                    ('email', gl.required, gl.format_email), 
+                    ('username', gl.required, gl.type_(str))
+                )
+
+            if not gl.validate(field_validations, data) :
+                flash('validation error', 'info')
+                return redirect(url_for('homepage'))
 
             user.email = email
             user.username = username

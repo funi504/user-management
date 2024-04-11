@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+  <div>
+    {% with messages = get_flashed_messages()%}
+    {% if messages%}
+        {% for message in messages%}
+            <p id="flash_message">{{message}}</p>
+        {%endfor%}
+    {%endif%}
+    {%endwith%}
+  </div>
+  <div>
+    <a href="/home">Home</a>
+    <br/>
+    <a href="/admin">admin dashboard</a>
+  </div>
+  <div>
+    {% for admin in all_admins %}
+        <p>Username :{{admin.username}}</p>
+        <p>Email : {{admin.email}}</p>
+        <p>user id : {{admin.id}}</p>
+    {% endfor %}
+  </div>
+  <div>
+
+
+{% endblock %}

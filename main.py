@@ -1,6 +1,6 @@
 import flask
 from flask import *
-from flask import Flask, session
+from flask import Flask, session , flash
 from flask_session import Session 
 from config import ApplicationConfig
 from models import db , User , AdminUser
@@ -9,6 +9,9 @@ import json
 from routes.signup import register
 from routes.signin import login
 from routes.profile import user_profile
+from routes.admin import admin
+from routes.superadmin import superadmin
+
 
 
 app = Flask(__name__)
@@ -35,6 +38,12 @@ def signin():
     resp = login(request , User , bcrypt , session ,flask)
     return resp
 
+@app.route("/signout" , methods=['POST','GET'])
+def signout():
+    session.pop("user_id")
+    flash("you logged out")
+    return redirect(url_for('signin'))
+
 @app.route("/profile" , methods=['POST','GET' , 'DELETE'])
 def profile_user():
     resp = user_profile(request , session, User , db , jsonify , bcrypt)
@@ -50,10 +59,52 @@ def homepage():
         email = user.email
         username = user.username
 
-        return render_template('home.html', email=email , username=username)
+        isAdmin = False
+
+        admin = AdminUser.query.filter_by(id=user_id).first()
+
+        if admin is None:
+            return render_template('home.html', email=email , username=username  , isAdmin = isAdmin)
+        else:
+            isAdmin = True
+        
+        return render_template('home.html', email=email , username=username , isAdmin = isAdmin)
     else:
         flash(" please first  login")
         return redirect(url_for('signin'))
+
+"""@app.route('/createAdmin' , methods=['GET'])
+def createadmins():
+    email = 'superAdmin@gmail.com'
+    username = 'superAdmin'
+    password = 'superAdmin123'
+
+
+    hashedPassword = bcrypt.generate_password_hash(password)
+    new_user = User(email=email , password=hashedPassword , username=username )
+    db.session.add(new_user)
+    db.session.commit()
+    print("user created")
+    print("new user id",new_user.id)
+
+    new_superadmin = AdminUser(id=new_user.id , AccessLevel='SuperAdmin')
+    db.session.add(new_superadmin)
+    db.session.commit()
+    print("super admin created")
+    return 'created'
+"""
+#TODO: admin view,  create , read , update , delete and suspend users
+@app.route('/admin' , methods=['GET','POST','PUT','DELETE'])
+def adminpage():
+    resp = admin( session , AdminUser , User , request)
+    return resp
+
+#TODO: superadmin view , create , read , delete and suspend admin
+@app.route('/superadmin', methods=['GET' , 'POST' , 'PUT' , 'DELETE'])
+def superadminpage():
+    resp = superadmin( session , AdminUser , User , request , db)
+    return resp
+
 
 # main driver function
 if __name__ == '__main__':
