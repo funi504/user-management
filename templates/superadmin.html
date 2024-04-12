@@ -10,22 +10,31 @@
       {% endif %}
     {% endwith %}
   </div>
-  <div>
-    <a href="/home">Home</a>
-    <br>
-    <a href="/admin">Admin Dashboard</a>
+  <div class="container" style="margin-left: 0px;">
+    <div class="mb-3" style="display: flex;">
+      <a href="/home" class="btn btn-primary">Home</a>
+      <br>
+      <a href="/admin" class="btn btn-primary">Admin Dashboard</a>
+    </div>
+    
+    <div>
+      {% for admin in all_admins %}
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5 class="card-title">Username: {{ admin.username }}</h5>
+            <p class="card-text">Email: {{ admin.email }}</p>
+            <p class="card-text">User ID: {{ admin.id }}</p>
+
+            <form class="removeAdminForm" action='/superadmin' method="post">
+              <input type="hidden" value="{{ admin.id }}" name="id">
+              <button type="submit" class="btn btn-danger">Remove as Admin</button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
   </div>
-  <div>
-    {% for admin in all_admins %}
-      <p>Username: {{ admin.username }}</p>
-      <p>Email: {{ admin.email }}</p>
-      <p>User ID: {{ admin.id }}</p>
-      <form class="removeAdminForm" method="post">
-        <input type="hidden" value="{{ admin.id }}" name="id">
-        <input type="submit" value="Remove as Admin">
-      </form>
-    {% endfor %}
-  </div>
+  
   <script>
     document.querySelectorAll('.removeAdminForm').forEach(form => {
       form.addEventListener('submit', function(event) {

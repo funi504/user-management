@@ -13,56 +13,82 @@
   <div>
   </div>
   <div>
-    <a href="/home">Home</a>
-    <br/>
+    <a href="/home" class="btn btn-primary mb-2">Home</a>
     {% if isSuperAdmin %}
-       <a href="/superadmin">super admin dashboard</a>
+      <a href="/superadmin" class="btn btn-primary">Super Admin Dashboard</a>
     {% endif %}
   </div>
+  
   <div>
     {% for user in users %}
-        <p>Username :{{user.username}}</p>
-        <p>Email : {{user.email}}</p>
-        <p>is suspended : {{user.is_suspended}}</p>
-        <p>User id : {{user.id}}</p>
 
-        {% if isSuperAdmin %}
-          <form action="/superadmin" method="post">
-            <input type="hidden" value="{{user.id}}" name="id">
-            <input type="submit" value="Make admin">
-          </form>
-        {% endif %}
+        <div class="card">
+          <div class="card-body">
+            <div class="card-text">
+              <p><strong>Username:</strong> {{ user.username }}</p>
+              <p><strong>Email:</strong> {{ user.email }}</p>
+              <p><strong>Is Suspended:</strong> {{ user.is_suspended }}</p>
+              <p><strong>User Id :</strong> {{ user.id }}</p>
+            </div>
 
-        <form action="/admin" method="post" class="editForm">
-          <input type="hidden" value="{{user.id}}" name="id">
-          <label>Username:</label>
-          <input type="text" value="{{user.username}}" placeholder="Enter new username" name="username">
-          <label>Email:</label>
-          <input type="email" value="{{user.email}}" placeholder="Enter new email" name="email">
+            <div style="display: flex; justify-content: space-around;">
+                {% if isSuperAdmin %}
+                  <div>
+                    <form action="/superadmin" method="post" class="mb-3">
+                      <input type="hidden" value="{{ user.id }}" name="id">
+                      <button type="submit" class="btn btn-primary">Make Admin</button>
+                    </form>
+                  </div>
+                  {% endif %}
+                  
+                  {% if user.is_suspended %}
+                    <div class="mb-3">
+                      <form action="/suspend" method="post">
+                        <input type="hidden" value="{{ user.id }}" name="id">
+                        <button type="submit" class="btn btn-success">Reinstate User</button>
+                      </form>
+                    </div>
+                  {% else %}
+                    <div class="mb-3">
+                      <form action="/suspend" method="post">
+                        <input type="hidden" value="{{ user.id }}" name="id">
+                        <button type="submit" class="btn btn-warning">Suspend User</button>
+                      </form>
+                    </div>
+                  {% endif %}
 
-          <label>If you want to change password , else leave blank</label>
-          <input type="password" name="password" placeholder="password should be 6 characters or more " id="password">
-
-          <input type="submit" value="Edit">
-        </form>
-
-        <form action="/admin" method="post" class="deleteForm">
-          <input type="hidden" value="{{user.id}}" name="id">
-          <input type="submit" value="delete user">
-        </form>
-        {% if user.is_suspended %}
-          <form action="/suspend" method="post" >
-            <input type="hidden" value="{{user.id}}" name="id">
-            <input type="submit" value="reinstate user">
-          </form>
-        {% endif %}
-
-        {% if not user.is_suspended %}
-          <form action="/suspend" method="post" >
-            <input type="hidden" value="{{user.id}}" name="id">
-            <input type="submit" value="suspend user">
-          </form>
-        {% endif %}
+                  <div class="mb-3">
+                    <form action="/admin" method="post" class="deleteForm">
+                      <input type="hidden" value="{{ user.id }}" name="id">
+                      <button type="submit" class="btn btn-danger">Delete User</button>
+                    </form>
+                  </div>
+             </div> 
+             <div>
+                  <form action="/admin" method="post" class="editForm">
+                    <input type="hidden" value="{{ user.id }}" name="id">
+                  
+                    <div class="mb-3">
+                      <label for="username" class="form-label">Username:</label>
+                      <input type="text" class="form-control" id="username" value="{{ user.username }}" placeholder="Enter new username" name="username">
+                    </div>
+                  
+                    <div class="mb-3">
+                      <label for="email" class="form-label">Email:</label>
+                      <input type="email" class="form-control" id="email" value="{{ user.email }}" placeholder="Enter new email" name="email">
+                    </div>
+                  
+                    <div class="mb-3">
+                      <label for="password" class="form-label">New Password (optional):</label>
+                      <input type="password" class="form-control" id="password" placeholder="Password should be 6 characters or more" name="password">
+                    </div>
+                  
+                    <button type="submit" class="btn btn-primary">Edit</button>
+                  </form>
+                </div>
+          </div>
+        </div>
+        <br/>
     {% endfor %}
   </div>
   <div>

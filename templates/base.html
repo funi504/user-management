@@ -2,16 +2,25 @@
 <html>
   <head>
     {% block head %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+   
     <title>{% block title %}{% endblock %} - My Webpage</title>
     {% endblock %}
+    {% block styles %}
+  <!-- Add Bootstrap CSS link -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* Your custom styles here */
+  </style>
+{% endblock %}
   </head>
   <body>
-    <div id="content">{% block content %}{% endblock %}</div>
+    <div id="content" class="container-fluid">{% block content %}{% endblock %}</div>
     <div id="footer">
       {% block footer %}
       &copy; Copyright 2024 by <a href="http://domain.invalid/">Funanani Nekhunguni</a>.
       {% endblock %}
     </div>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
   </body>
 </html>

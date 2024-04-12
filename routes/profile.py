@@ -4,7 +4,7 @@ from flask import redirect, url_for, flash
 def user_profile(request , session, User , db ,jsonify , bcrypt , AdminUser):
 
     user_id = session.get("user_id") 
-    print(f"user Id : {user_id} ")
+    #print(f"user Id : {user_id} ")
 
     if  user_id is None:
         flash("session expired please login")
@@ -16,9 +16,10 @@ def user_profile(request , session, User , db ,jsonify , bcrypt , AdminUser):
             email = request.form.get("email")
             username =  request.form.get("username")
             new_password =request.form.get("password")
+            print(email , username ,new_password)
 
-            if new_password is None:
-
+            if new_password == '':
+                
                 data = {
                     'email':email,
                     'username': username,
@@ -29,9 +30,9 @@ def user_profile(request , session, User , db ,jsonify , bcrypt , AdminUser):
                         ('username', gl.required, gl.type_(str))
                     )
 
-                if not gl.validate(field_validations, data) :
+                if not gl.validate(field_validations, data):
                     flash('validation error', 'info')
-                    return redirect(url_for('homepage'))
+                    jsonify({'error': 'failed'}),500
 
                 user.email = email
                 user.username = username
@@ -48,7 +49,7 @@ def user_profile(request , session, User , db ,jsonify , bcrypt , AdminUser):
 
                 field_validations = ( 
                         ('email', gl.required, gl.format_email), 
-                        ('username', gl.required, gl.type_(str),  gl.length_min(5)),
+                        ('username', gl.required, gl.type_(str)),
                         ('new_password', gl.required, gl.type_(str) , gl.length_min(5))
                     )
 

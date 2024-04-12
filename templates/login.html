@@ -11,9 +11,9 @@
             <h1>Please login</h1>
             <br>
             <form action="/signin" method="post">
-                <input type="email" placeholder="Email" name="email" >
+                <input type="email" placeholder="Email" name="email" required>
 
-                <input type="password" placeholder="Password" name="password" >
+                <input type="password" placeholder="Password" name="password" minlength="6" >
 
                 <input class="btn btn-default" type="submit" value="Login">
             </form>

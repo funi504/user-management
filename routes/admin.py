@@ -5,7 +5,7 @@ def admin( session , AdminUser , User , request , jsonify, db ,bcrypt):
     
     user_id = session.get("user_id")
 
-    if user_id is None:
+    if user_id is None: 
         flash("session expired please login")
         return redirect(url_for('signin'))
     
@@ -32,12 +32,11 @@ def admin( session , AdminUser , User , request , jsonify, db ,bcrypt):
     if request.method == 'PUT':
 
         username = request.json["username"]
-        print("username",username)
         email = request.json["email"]
         new_password = request.json['new_password']
         id = request.json["id"]
 
-        if new_password is None:
+        if new_password == '': 
 
             data = {
                     'email':email,
@@ -52,7 +51,7 @@ def admin( session , AdminUser , User , request , jsonify, db ,bcrypt):
                     )
 
             if not gl.validate(field_validations, data) :
-                flash('validation error', 'info')
+                #flash('validation error', 'info')
                 return redirect(url_for('homepage'))
 
             user = User.query.filter_by(id=id).first()
@@ -82,7 +81,7 @@ def admin( session , AdminUser , User , request , jsonify, db ,bcrypt):
                     )
 
             if not gl.validate(field_validations, data) :
-                flash('validation error', 'info')
+                #flash('validation error', 'info')
                 return redirect(url_for('homepage'))
 
             user = User.query.filter_by(id=id).first()
@@ -114,11 +113,11 @@ def admin( session , AdminUser , User , request , jsonify, db ,bcrypt):
             db.session.delete(user)
             db.session.commit()
 
-            flash("account deleted successfully")
+            #flash("account deleted successfully")
             return jsonify({'message': 'success'}),200
 
         except  Exception as e:
 
             print("errer is ",e)
-            flash("failed to delete account , try again later")
+            #flash("failed to delete account , try again later")
             return jsonify({'error': 'failed'}),500

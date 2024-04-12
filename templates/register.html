@@ -11,12 +11,12 @@
             <h1>Please sign up</h1>
             <br>
             <form action="/signup" method="post">
-                <input type="email" placeholder="Email" name="email" >
+                <input type="email" placeholder="Email" name="email" required>
 
-                <input type="username" placeholder="Username" name="username" >
+                <input type="username" placeholder="Username" name="username" required>
 
                 <label>Password should be more than 5 characters :</label>
-                <input type="password" placeholder="Password " name="password" >
+                <input type="password" placeholder="Password " name="password" minlength="6" required>
 
                 <input class="btn btn-default" type="submit" value="sign up">
             </form>

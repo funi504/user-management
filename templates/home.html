@@ -2,49 +2,85 @@
 
 
 {% block content %}
-  <div>
-    {% with messages = get_flashed_messages()%}
-    {% if messages%}
-        {% for message in messages%}
-            <p id="flash_message">{{message}}</p>
-        {%endfor%}
-    {%endif%}
-    {%endwith%}
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for message in messages %}
+      <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <p style="color: #ffffff;">{{ message }}</p>
+      </div>      
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+</div>
+
+<div>
+  {% if isAdmin %}
+    <a href="/admin" class="btn btn-primary">Admin Dashboard</a>
+  {% endif %}
+</div>
+
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">User Information</h5>
+      <div class="card-text">
+        <p><strong>Username:</strong> {{ username }}</p>
+        <p><strong>Email:</strong> {{ email }}</p>
+      </div>
+    </div>
   </div>
-  <div>
-    {% if isAdmin %}
-      <a href="/admin">admin dashboard</a>
-    {% endif%}
-  </div>
-  <div>
-    <p>Username :{{username}}</p>
-    <p>Email : {{email}}</p>
-  </div>
-  <div>
-
-    <form action="/profile" method="post" >
-      <label>username:</label>
-      <input type = "text" value={{username}} placeholder="enter new username" name="username">
-
-      <label>email</label>
-      <input type="email" value="{{email}}" placeholder="enter new email" name="email">
-
-      <label>If you want to change password , else leave blank</label>
-      <input type="password" name="password" placeholder="password should be 6 characters or more " id="user-password">
-
-      <input type="submit" value="edit">
+  
+  <br/>
+  <div class="card">
+    <div class="card-header">
+      <h5 class="card-title">Edit profile</h5>
+    </div>
+  <div class="card-body">
+    <form action="/profile" method="post" class="needs-validation" novalidate>
+      <div class="mb-3">
+        <label for="username" class="form-label">Username:</label>
+        <input type="text" value="{{ username }}" class="form-control" placeholder="Enter new username" name="username" id="username" required>
+        <div class="invalid-feedback">Please provide a username.</div>
+      </div>
+    
+      <div class="mb-3">
+        <label for="email" class="form-label">Email:</label>
+        <input type="email" value="{{ email }}" class="form-control" placeholder="Enter new email" name="email" id="email" required>
+        <div class="invalid-feedback">Please provide a valid email.</div>
+      </div>
+    
+      <div class="mb-3">
+        <label for="password" class="form-label">New Password:</label>
+        <input type="password" class="form-control" name="password" placeholder="Password should be 6 characters or more" id="password" minlength="6">
+      </div>
+    
+      <button type="submit" class="btn btn-primary">Edit</button>
     </form>
+   </div> 
   </div>
-
-  <div>
-    <form id="deleteForm" method="post" action="/profile" >
-      <input type="password" name="password" placeholder="enter password to delete account" id="user-password">
-      <input type="submit" value="delete">
-    </form>
+  <br/>
+  <div class="card">
+    <div class="card-header">
+      <h5 class="card-title">Delete Account</h5>
+    </div>
+    <div class="card-body">
+      <form id="deleteForm" method="post" action="/profile" class="needs-validation" novalidate>
+        <div class="mb-3">
+          <label for="user-password" class="form-label">Enter password to delete account:</label>
+          <input type="password" name="password" class="form-control" placeholder="Enter password" id="user-password" required>
+          <div class="invalid-feedback">Please enter your password.</div>
+        </div>
+        <button type="submit" class="btn btn-danger">Delete</button>
+      </form>
+    </div>
   </div>
+      
+  </div>
+  <br/>
+  <br/>
   <form action="/signout" method="post" >
 
-    <input type="submit" value="log out">
+    <input type="submit" value="log out" class="btn btn-secondary">
 
   </form>
 </div>
