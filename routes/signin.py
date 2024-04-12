@@ -1,7 +1,7 @@
 import gladiator as gl 
 from flask import render_template, redirect, url_for, flash
 
-def login(request , User , bcrypt , session ,flask):
+def login(request , User , bcrypt , session ,flask ,db):
     if request.method == 'GET':
 
         return render_template('login.html')
@@ -32,14 +32,27 @@ def login(request , User , bcrypt , session ,flask):
             flash('incorect information ', 'info')
             return redirect(url_for('signin'))
 
-        if  user.is_suspended:
+        if user.is_suspended:
             flash('your account is suspended ', 'info')
             return redirect(url_for('signin'))
 
         if not bcrypt.check_password_hash(user.password, password):
-            flash('incorect information ', 'info')
-            return redirect(url_for('signin'))
+            attempt = user.login_attempt + 1
+            user.login_attempt = attempt
+            db.session.commit()
 
+            if attempt > 3 :
+                user.is_suspended = True
+                db.session.commit()
+                flash(f'account has been suspended contact support', 'info')
+                return redirect(url_for('signin'))
+
+
+            flash(f'incorect information , you have : {3 - attempt} left ', 'info')
+            return redirect(url_for('signin'))
+            
+        user.login_attempt = 0
+        db.session.commit()
         session['user_id'] = user.id
         flask.session['user_id'] = user.id
 

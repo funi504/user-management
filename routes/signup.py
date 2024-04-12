@@ -22,7 +22,7 @@ def register(request,bcrypt ,User ,db , jsonify):
         field_validations = ( 
                 ('email', gl.required, gl.format_email), 
                 ('password', gl.required, gl.length_min(5)), 
-                ('username', gl.required, gl.type_(str))
+                ('username', gl.required, gl.type_(str),  gl.length_min(5))
             )
 
         if not gl.validate(field_validations, data) :

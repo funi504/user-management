@@ -35,7 +35,7 @@ def signup():
 
 @app.route("/signin" , methods=['POST','GET'])
 def signin():
-    resp = login(request , User , bcrypt , session ,flask)
+    resp = login(request , User , bcrypt , session ,flask,db)
     return resp
 
 @app.route("/signout" , methods=['POST','GET'])
@@ -46,16 +46,22 @@ def signout():
 
 @app.route("/profile" , methods=['POST','GET' , 'DELETE'])
 def profile_user():
-    resp = user_profile(request , session, User , db , jsonify , bcrypt)
+    resp = user_profile(request , session, User , db , jsonify , bcrypt , AdminUser)
     return resp
 
 @app.route("/home" , methods=['POST','GET'])
 def homepage():
 
     user_id = session.get("user_id")
-    
+    print("user id is ", user_id)
+
     if user_id is not None:
         user = User.query.filter_by(id = user_id).first()
+
+        if user is None:
+            flash(" please first  login")
+            return redirect(url_for('signin'))
+
         email = user.email
         username = user.username
 
@@ -96,7 +102,7 @@ def createadmins():
 #TODO: admin view,  create , read , update , delete and suspend users
 @app.route('/admin' , methods=['GET','POST','PUT','DELETE'])
 def adminpage():
-    resp = admin( session , AdminUser , User , request, jsonify , db )
+    resp = admin( session , AdminUser , User , request, jsonify , db ,bcrypt)
     return resp
 
 #TODO: superadmin view , create , read , delete and suspend admin
@@ -133,7 +139,9 @@ def suspend():
             return redirect(url_for('adminpage'))
 
         if user.is_suspended:
+            
             user.is_suspended = False
+            user.login_attempt = 0
             db.session.commit()
             
             return redirect(url_for('adminpage'))

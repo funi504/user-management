@@ -39,6 +39,10 @@
           <input type="text" value="{{user.username}}" placeholder="Enter new username" name="username">
           <label>Email:</label>
           <input type="email" value="{{user.email}}" placeholder="Enter new email" name="email">
+
+          <label>If you want to change password , else leave blank</label>
+          <input type="password" name="password" placeholder="password should be 6 characters or more " id="password">
+
           <input type="submit" value="Edit">
         </form>
 
@@ -70,12 +74,14 @@
           var username = form.querySelector('input[name="username"]').value;
           var email = form.querySelector('input[name="email"]').value;
           var id = form.querySelector('input[name="id"]').value;
+          var new_password = form.querySelector('input[name="password"]').value;
           fetch('/admin', {
             method: 'PUT',
             body: JSON.stringify({ 
               "id": id,
               "email": email,
-              "username": username
+              "username": username,
+              "new_password":new_password
             }),
             headers: {
               'Content-Type': 'application/json'

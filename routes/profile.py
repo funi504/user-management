@@ -1,7 +1,7 @@
 import gladiator as gl 
 from flask import redirect, url_for, flash
 
-def user_profile(request , session, User , db ,jsonify , bcrypt):
+def user_profile(request , session, User , db ,jsonify , bcrypt , AdminUser):
 
     user_id = session.get("user_id") 
     print(f"user Id : {user_id} ")
@@ -15,28 +15,55 @@ def user_profile(request , session, User , db ,jsonify , bcrypt):
             user = User.query.filter_by(id=user_id).first()
             email = request.form.get("email")
             username =  request.form.get("username")
+            new_password =request.form.get("password")
 
+            if new_password is None:
 
-            data = {
-                'email':email,
-                'username': username,
-            }
+                data = {
+                    'email':email,
+                    'username': username,
+                }
 
-            field_validations = ( 
-                    ('email', gl.required, gl.format_email), 
-                    ('username', gl.required, gl.type_(str))
-                )
+                field_validations = ( 
+                        ('email', gl.required, gl.format_email), 
+                        ('username', gl.required, gl.type_(str))
+                    )
 
-            if not gl.validate(field_validations, data) :
-                flash('validation error', 'info')
+                if not gl.validate(field_validations, data) :
+                    flash('validation error', 'info')
+                    return redirect(url_for('homepage'))
+
+                user.email = email
+                user.username = username
+                db.session.commit()
+
+                flash("user information updated")
                 return redirect(url_for('homepage'))
+            else:
+                data = {
+                    'email':email,
+                    'username': username,
+                    'new_password': new_password
+                }
 
-            user.email = email
-            user.username = username
-            db.session.commit()
+                field_validations = ( 
+                        ('email', gl.required, gl.format_email), 
+                        ('username', gl.required, gl.type_(str),  gl.length_min(5)),
+                        ('new_password', gl.required, gl.type_(str) , gl.length_min(5))
+                    )
 
-            flash("user information updated")
-            return redirect(url_for('homepage'))
+                if not gl.validate(field_validations, data) :
+                    flash('validation error', 'info')
+                    return redirect(url_for('homepage'))
+
+                hashedPassword = bcrypt.generate_password_hash(new_password)
+                user.email = email
+                user.username = username
+                user.password = hashedPassword
+                db.session.commit()
+
+                flash("user information updated")
+                return redirect(url_for('homepage'))
         
         except Exception as e:
             print(e)
@@ -51,6 +78,13 @@ def user_profile(request , session, User , db ,jsonify , bcrypt):
             if not bcrypt.check_password_hash(user.password, password):
                 return jsonify({"error": "unauthorized"}), 401
             
+            admin_user = AdminUser.query.filter_by(id=user_id).first()
+            if admin_user is None:
+                pass
+            else:
+                db.session.delete(admin_user)
+                db.session.commit()
+
             db.session.delete(user)
             db.session.commit()
             session.pop("user_id")

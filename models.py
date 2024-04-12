@@ -13,6 +13,7 @@ class User(db.Model):
     username = db.Column(db.Text ,unique=True , nullable=False)
     password = db.Column(db.Text , nullable=False)
     is_suspended = db.Column(db.Boolean , nullable=False ,default= False )
+    login_attempt = db.Column(db.Integer , nullable=False ,default= 0 )
 
 class AdminUser(db.Model):
     __tablename__ = "admin_users"
