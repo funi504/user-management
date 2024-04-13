@@ -86,7 +86,7 @@ def createadmins():
     password = 'superAdmin123'
 
 
-    hashedPassword = bcrypt.generate_password_hash(password)
+    hashedPassword = bcrypt.generate_password_hash(password).decode('utf-8')
     new_user = User(email=email , password=hashedPassword , username=username )
     db.session.add(new_user)
     db.session.commit()
