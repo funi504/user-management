@@ -1,25 +1,36 @@
 {% extends "base.html" %}
-    {% block content %}
-        <div class="container">
-                {% with messages = get_flashed_messages()%}
-                    {% if messages%}
-                        {% for message in messages%}
-                            <p id="flash_message">{{message}}</p>
-                        {%endfor%}
-                    {%endif%}
-                {%endwith%}
-            <h1>Please sign up</h1>
-            <br>
-            <form action="/signup" method="post">
-                <input type="email" placeholder="Email" name="email" required>
 
-                <input type="username" placeholder="Username" name="username" required>
-
-                <label>Password should be more than 5 characters :</label>
-                <input type="password" placeholder="Password " name="password" minlength="6" required>
-
-                <input class="btn btn-default" type="submit" value="sign up">
-            </form>
-            <a href="{{ url_for('signin') }}">  have an acoount ? , sign in</a>
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="card-title text-center">Please sign up</h1>
+                    <form action="/signup" method="post">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password (should be more than 5 characters)</label>
+                            <input type="password" class="form-control" id="password" name="password" minlength="6" required>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Sign up</button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-3">
+                        <p>Already have an account? <a href="{{ url_for('signin') }}">Sign in</a></p>
+                    </div>
+                </div>
+            </div>
         </div>
-    {% endblock %}
+    </div>
+</div>
+{% endblock %}
+
