@@ -29,7 +29,7 @@ def register(request,bcrypt ,User ,db , jsonify):
             flash('validation error', 'info')
             return redirect(url_for('signup'))
 
-        hashedPassword = bcrypt.generate_password_hash(password)
+        hashedPassword = bcrypt.generate_password_hash(password).decode('utf-8')
 
         user_exists = User.query.filter_by(email=email).first() is not None
         username_exists = User.query.filter_by(username=username).first() is not None
