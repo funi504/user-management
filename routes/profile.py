@@ -57,7 +57,7 @@ def user_profile(request , session, User , db ,jsonify , bcrypt , AdminUser):
                     flash('validation error', 'info')
                     return redirect(url_for('homepage'))
 
-                hashedPassword = bcrypt.generate_password_hash(new_password)
+                hashedPassword = bcrypt.generate_password_hash(new_password).decode('utf-8')
                 user.email = email
                 user.username = username
                 user.password = hashedPassword
