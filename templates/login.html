@@ -1,22 +1,38 @@
 {% extends "base.html" %}
-    {% block content %}
-        <div class="container">
-                {% with messages = get_flashed_messages()%}
-                    {% if messages%}
-                        {% for message in messages%}
-                            <p id="flash_message">{{message}}</p>
-                        {%endfor%}
-                    {%endif%}
-                {%endwith%}
-            <h1>Please login</h1>
-            <br>
-            <form action="/signin" method="post">
-                <input type="email" placeholder="Email" name="email" required>
 
-                <input type="password" placeholder="Password" name="password" minlength="6" >
-
-                <input class="btn btn-default" type="submit" value="Login">
-            </form>
-            <a href="{{ url_for('signup') }}">dont  have an acoount ? , sign up</a>
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <p id="flash_message">{{ message }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    <h1 class="card-title text-center">Please login</h1>
+                    <form action="/signin" method="post">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" minlength="5" required>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-3">
+                        <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign up</a></p>
+                    </div>
+                </div>
+            </div>
         </div>
-    {% endblock %}
+    </div>
+</div>
+{% endblock %}
