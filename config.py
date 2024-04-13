@@ -5,10 +5,15 @@ class ApplicationConfig:
 
     SQLACHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = True
-    
-    SQLALCHEMY_DATABASE_URI = r"postgres://database_user_management_database_user:nExgXpGz4OCvh3F13g8dfOhJXY3yP2Ov@dpg-cocl5ha1hbls73ct1hh0-a/database_user_management_database"
+    if os.getenv('DATABASE_URL'):
+        SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL').replace("postgres://", "postgresql://", 1)
+    else:
+        SQLALCHEMY_DATABASE_URI = r"sqlite:///./db.sqlite"
     
     SESSION_TYPE ="redis"
     SESSION_PERMANENT = False
     SESSION_USE_SIGNER = True
-    SESSION_REDIS = redis.from_url("redis://red-cocl0dvsc6pc73d22d2g:6379")
+    if os.getenv('REDIS_URL'):
+        SESSION_REDIS = os.getenv('REDIS_URL')
+    else:
+        SESSION_REDIS = r"sqlite:///./db.sqlite"
