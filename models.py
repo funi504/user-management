@@ -18,4 +18,4 @@ class User(db.Model):
 class AdminUser(db.Model):
     __tablename__ = "admin_users"
     id = db.Column(db.String(32) , primary_key=True , unique=True ,nullable=False)
-    AccessLevel = db.Column(db.Enum('SuperAdmin', 'Admin'), nullable=False)
+    AccessLevel = db.Column(db.Enum('SuperAdmin', 'Admin', name='admin_types'), nullable=False)
