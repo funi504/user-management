@@ -89,7 +89,7 @@ def admin( session , AdminUser , User , request , jsonify, db ,bcrypt):
             if user is None:
                 return jsonify({'message': 'user not found'}),404
             
-            hashedPassword = bcrypt.generate_password_hash(new_password)
+            hashedPassword = bcrypt.generate_password_hash(new_password).decode('utf-8')
             user.email = email
             user.username = username
             user.password = hashedPassword
