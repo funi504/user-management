@@ -36,7 +36,7 @@ def login(request , User , bcrypt , session ,flask ,db):
             flash('your account is suspended ', 'info')
             return redirect(url_for('signin'))
 
-        if not bcrypt.check_password_hash(user.password, password).decode('utf-8'):
+        if not bcrypt.check_password_hash(user.password, password):
             attempt = user.login_attempt + 1
             user.login_attempt = attempt
             db.session.commit()
