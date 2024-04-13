@@ -79,7 +79,7 @@ def homepage():
         flash(" please first  login")
         return redirect(url_for('signin'))
 
-@app.route('/createAdmin' , methods=['GET'])
+"""@app.route('/createAdmin' , methods=['GET'])
 def createadmins():
     email = 'superAdmin@gmail.com'
     username = 'superAdmin'
@@ -97,7 +97,7 @@ def createadmins():
     db.session.add(new_superadmin)
     db.session.commit()
     print("super admin created")
-    return 'created'
+    return 'created' """
 
 #TODO: admin view,  create , read , update , delete and suspend users
 @app.route('/admin' , methods=['GET','POST','PUT','DELETE'])
