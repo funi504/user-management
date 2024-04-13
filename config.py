@@ -14,6 +14,8 @@ class ApplicationConfig:
     SESSION_PERMANENT = False
     SESSION_USE_SIGNER = True
     if os.environ.get('REDIS_URL'):
-        SESSION_REDIS = os.environ.get('REDIS_URL')
+        SESSION_REDIS = redis.from_url(os.environ['REDIS_URL'])
+        SESSION_REDIS.set('key', 'redis-py')
+        SESSION_REDIS.get('key')
     else:
         SESSION_REDIS = r"sqlite:///./db.sqlite"
