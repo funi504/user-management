@@ -147,8 +147,12 @@ def suspend():
             
             return redirect(url_for('adminpage'))
 
+@app.route('/', defaults={'path': '/signin'})
+@app.route('/<path:path>')
+def catch_all(path):
+    return redirect(url_for('signin')) 
 
 # main driver function
 if __name__ == '__main__':
  
-    app.run('localhost', port=8080 , debug=True )
+    app.run('localhost', port=8080 )
