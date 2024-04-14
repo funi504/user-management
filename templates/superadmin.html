@@ -21,9 +21,22 @@
       {% for admin in all_admins %}
         <div class="card mb-3">
           <div class="card-body">
-            <h5 class="card-title">Username: {{ admin.username }}</h5>
-            <p class="card-text">Email: {{ admin.email }}</p>
-            <p class="card-text">User ID: {{ admin.id }}</p>
+            <table class="table table-borderless">
+              <tbody>
+                <tr>
+                  <th>Username:</th>
+                  <td>{{ admin.username }}</td>
+                </tr>
+                <tr>
+                  <th>Email:</th>
+                  <td>{{ admin.email }}</td>
+                </tr>
+                <tr>
+                  <th>User ID:</th>
+                  <td>{{ admin.id }}</td>
+                </tr>
+              </tbody>
+            </table>
 
             <form class="removeAdminForm" action='/superadmin' method="post">
               <input type="hidden" value="{{ admin.id }}" name="id">

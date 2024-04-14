@@ -45,7 +45,7 @@ def register(request,bcrypt ,User ,db , jsonify):
         new_user = User(email=email , password=hashedPassword , username=username )
 
         db.session.add(new_user)
-        db.session.commit()
+        db.session.commit() 
 
         """return jsonify({
             "id": new_user.id,

@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+  .hidden {
+    display: none;
+  }
+</style>
   <div>
     {% with messages = get_flashed_messages()%}
     {% if messages%}
@@ -25,13 +30,33 @@
         <div class="card">
           <div class="card-body">
             <div class="card-text">
-              <p><strong>Username:</strong> {{ user.username }}</p>
-              <p><strong>Email:</strong> {{ user.email }}</p>
-              <p><strong>Is Suspended:</strong> {{ user.is_suspended }}</p>
-              <p><strong>User Id :</strong> {{ user.id }}</p>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>User ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Is Suspended</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.is_suspended }}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <hr/>
             </div>
 
             <div style="display: flex; justify-content: space-around;">
+
+              <div class="mb-3">
+                <button id="toggleButton"  class="editButton btn btn-primary">Edit Profile</button>
+              </div>
+
                 {% if isSuperAdmin %}
                   <div>
                     <form action="/superadmin" method="post" class="mb-3">
@@ -63,9 +88,11 @@
                       <button type="submit" class="btn btn-danger">Delete User</button>
                     </form>
                   </div>
+
+                  
              </div> 
              <div>
-                  <form action="/admin" method="post" class="editForm">
+                  <form action="/admin" method="post" class="editForm hidden" id="profileForm" >
                     <input type="hidden" value="{{ user.id }}" name="id">
                   
                     <div class="mb-3">
@@ -83,7 +110,7 @@
                       <input type="password" class="form-control" id="password" placeholder="Password should be 5 characters or more" name="password">
                     </div>
                   
-                    <button type="submit" class="btn btn-primary">Edit</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
                   </form>
                 </div>
           </div>
@@ -171,5 +198,18 @@
         });
       });
     </script>
-
+    <script>
+      // Select all edit buttons and add event listeners to each
+      document.querySelectorAll('.editButton').forEach(button => {
+        button.addEventListener('click', function() {
+          // Find the corresponding form for the clicked button
+          const form = button.closest('.card-body').querySelector('.editForm');
+          // Toggle the visibility of the form
+          form.classList.toggle('hidden');
+          // Change the button text
+          button.textContent = form.classList.contains('hidden') ? 'Edit Profile' : 'Close';
+        });
+      });
+    </script>
+    
 {% endblock %}

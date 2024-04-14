@@ -62,19 +62,20 @@ def homepage():
             flash(" please first  login")
             return redirect(url_for('signin'))
 
-        email = user.email
+        email = user.email     
         username = user.username
+        User_id = user.id
 
         isAdmin = False
 
         admin = AdminUser.query.filter_by(id=user_id).first()
 
         if admin is None:
-            return render_template('home.html', email=email , username=username  , isAdmin = isAdmin)
+            return render_template('home.html', email=email , username=username , user_id = User_id , isAdmin = isAdmin)
         else:
             isAdmin = True
         
-        return render_template('home.html', email=email , username=username , isAdmin = isAdmin)
+        return render_template('home.html', email=email , username=username , user_id = User_id  , isAdmin = isAdmin)
     else:
         flash(" please first  login")
         return redirect(url_for('signin'))
@@ -113,7 +114,7 @@ def superadminpage():
 
 @app.route('/suspend', methods=['POST'])
 def suspend():
-    user_id = session.get("user_id")
+    user_id = session.get("user_id")  
 
     if user_id is None:
         flash("session expired please login")
@@ -150,4 +151,4 @@ def suspend():
 # main driver function
 if __name__ == '__main__':
  
-    app.run('localhost', port=8080  )
+    app.run('localhost', port=8080 , debug=True )

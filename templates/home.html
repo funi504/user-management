@@ -3,6 +3,16 @@
 
 {% block content %}
 
+<style>
+  .hidden {
+    display: none;
+  }
+
+  .table {
+    border: none;
+  }
+</style>
+
   {% with messages = get_flashed_messages() %}
     {% if messages %}
       {% for message in messages %}
@@ -19,19 +29,36 @@
     <a href="/admin" class="btn btn-primary">Admin Dashboard</a>
   {% endif %}
 </div>
-
+  <br/>
   <div class="card">
     <div class="card-body">
-      <h5 class="card-title">User Information</h5>
-      <div class="card-text">
-        <p><strong>Username:</strong> {{ username }}</p>
-        <p><strong>Email:</strong> {{ email }}</p>
+      <h5 class="card-title">Profile Information</h5>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>User ID</th>
+              <th>Username</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ user_id }}</td>
+              <td>{{ username }}</td>
+              <td>{{ email }}</td>
+            </tr>
+          </tbody>
+        </table>
+        
       </div>
     </div>
   </div>
   
   <br/>
-  <div class="card">
+  <button id="toggleButton" class="btn btn-primary" >Edit Profile</button>
+  <button id="deleteButton" class="btn btn-danger" >Delete Account</button>
+
+  <div class="card hidden" id="profileForm" >
     <div class="card-header">
       <h5 class="card-title">Edit profile</h5>
     </div>
@@ -54,12 +81,13 @@
         <input type="password" class="form-control" name="password" placeholder="Password should be 5 characters or more" id="password" minlength="5">
       </div>
     
-      <button type="submit" class="btn btn-primary">Edit</button>
+      <button type="submit" class="btn btn-primary">submit</button>
     </form>
    </div> 
   </div>
   <br/>
-  <div class="card">
+
+  <div class="card hidden" id="deleteForm" >
     <div class="card-header">
       <h5 class="card-title">Delete Account</h5>
     </div>
@@ -79,9 +107,7 @@
   <br/>
   <br/>
   <form action="/signout" method="post" >
-
     <input type="submit" value="log out" class="btn btn-secondary">
-
   </form>
 </div>
   <script>
@@ -115,5 +141,21 @@
         });
     });
 </script>
+<script>
+  const toggleButton = document.getElementById('toggleButton');
+  const profileForm = document.getElementById('profileForm');
+  const deleteButton = document.getElementById('deleteButton');
+  const deleteForm = document.getElementById('deleteForm');
 
+  toggleButton.addEventListener('click', function() {
+    profileForm.classList.toggle('hidden');
+    toggleButton.textContent = profileForm.classList.contains('hidden') ? 'Edit Profile' : 'Close';
+  });
+
+  deleteButton.addEventListener('click', function() {
+    deleteForm.classList.toggle('hidden');
+    deleteButton.textContent = deleteForm.classList.contains('hidden') ? 'Delete Account' : 'Close';
+  });
+
+</script>
 {% endblock %}

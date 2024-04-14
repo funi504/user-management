@@ -18,4 +18,4 @@ class ApplicationConfig:
         SESSION_REDIS.set('key', 'redis-py')
         SESSION_REDIS.get('key')
     else:
-        SESSION_REDIS = r"sqlite:///./db.sqlite"
+        SESSION_REDIS = redis.from_url("redis://127.0.0.1:6379")
